@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Central Habitar</title>
+<link rel="icon" href="logo-habitar-branco.png">
+<link rel="apple-touch-icon" href="logo-habitar-branco.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Figtree:wght@400;500;600&display=swap">
+
+<script>
+  /* aplica a escolha guardada antes da página pintar, para não piscar no tema errado */
+  (function () {
+    try {
+      var saved = localStorage.getItem("habitar-tema");
+      if (saved === "dark" || saved === "light") {
+        document.documentElement.setAttribute("data-theme", saved);
+      }
+    } catch (e) { /* navegador sem acesso ao armazenamento: segue o tema do aparelho */ }
+  })();
+</script>
+
+<style>
+  :root {
+    color-scheme: light;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    /* cores da marca, amostradas do logotipo: verde e azul-marinho */
+    --green:      #226B42;
+    --green-deep: #1A5233;
+    --navy:       #021D5E;
+    --mist:       #E6EBE6;
+
+    --paper:      #F4F6F4;
+    --surface:    #FFFFFF;
+    --surface-2:  #EDF0EC;
+    --ink:        #1E2530;
+    --ink-2:      #5A6270;
+    --ink-3:      #8A919C;
+    --line:       #DFE3DE;
+    --line-soft:  #EAEDE8;
+
+    --hover:      #1A5233;
+
+    /* o cabeçalho é verde nos dois temas, com o logotipo vertical em branco */
+    --band:       #226B42;
+    --band-ink:   #FFFFFF;
+    --band-ink-2: #BFDACB;
+    --band-line:  rgba(255,255,255,.30);
+
+    --solid:      #021D5E;
+    --solid-ink:  #FFFFFF;
+    --focus:      #226B42;
+
+    --erro:       #A32B2B;
+
+    --display: "Archivo", "Arial Narrow", Helvetica, sans-serif;
+    --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+
+    --step--1: 0.8125rem;
+    --step-0:  0.9375rem;
+    --step-1:  1.0625rem;
+    --step-2:  1.25rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:      #141814;
+      --surface:    #1D221E;
+      --surface-2:  #252B26;
+      --ink:        #E8EBE6;
+      --ink-2:      #ADB4AC;
+      --ink-3:      #828A83;
+      --line:       #2F3630;
+      --line-soft:  #262C27;
+      --mist:       #2F3630;
+
+      --hover:      #6FBF8E;
+
+      --solid:      #2C4491;
+      --solid-ink:  #FFFFFF;
+      --focus:      #6FBF8E;
+
+      --erro:       #F09090;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:      #141814;
+    --surface:    #1D221E;
+    --surface-2:  #252B26;
+    --ink:        #E8EBE6;
+    --ink-2:      #ADB4AC;
+    --ink-3:      #828A83;
+    --line:       #2F3630;
+    --line-soft:  #262C27;
+    --mist:       #2F3630;
+
+    --hover:      #6FBF8E;
+
+    --solid:      #2C4491;
+    --solid-ink:  #FFFFFF;
+    --focus:      #6FBF8E;
+
+    --erro:       #F09090;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  img { max-width: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .inner {
+    max-width: 68rem;
+    margin: 0 auto;
+    padding-inline: 20px;
+  }
+
+  /* device da marca: caixa-alta com tracking largo, como o menu do site */
+  .label {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- banda da marca ---------- */
+
+  .band {
+    background: var(--band);
+    color: var(--band-ink);
+  }
+
+  .band .inner {
+    padding-block: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px 28px;
+  }
+
+  .lockup { display: flex; align-items: center; gap: 20px; min-width: 0; }
+
+  /* logotipo vertical: a altura é que manda */
+  .lockup img {
+    height: 82px;
+    width: auto;
+    display: block;
+    flex: none;
+  }
+
+  .lockup__rule {
+    width: 1px;
+    align-self: stretch;
+    background: var(--band-line);
+    flex: none;
+  }
+
+  .lockup__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .lockup__text h1 { margin: 0; font-size: 0.6875rem; color: var(--band-ink); }
+  .lockup__text span:last-child {
+    font-size: var(--step--1);
+    color: var(--band-ink-2);
+  }
+
+  .band__right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 18px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--band-ink-2);
+    background: transparent;
+    border: 1px solid var(--band-line);
+    border-radius: 999px;
+    padding: 7px 13px;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .pill:hover { color: var(--band-ink); border-color: var(--band-ink); }
+  .pill:focus-visible { outline: 2px solid var(--band-ink); outline-offset: 2px; }
+  .pill svg { width: 14px; height: 14px; flex: none; }
+
+  .band__meta {
+    text-align: right;
+    color: var(--band-ink-2);
+    font-size: var(--step--1);
+    line-height: 1.65;
+    font-variant-numeric: tabular-nums;
+  }
+  .band__meta b { color: var(--band-ink); font-weight: 600; }
+
+  /* ---------- portão de senha ---------- */
+
+  .portao { padding-block: 64px 80px; }
+
+  .portao__caixa {
+    max-width: 30rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 30px 28px 26px;
+  }
+
+  .portao .label { color: var(--ink-3); display: block; margin-bottom: 10px; }
+
+  .portao h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+  }
+
+  .portao p {
+    margin: 0 0 20px;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+
+  .portao__linha { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  #senha {
+    flex: 1 1 12rem;
+    min-width: 0;
+    font-family: var(--body);
+    font-size: var(--step-0);
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 11px 13px;
+  }
+  #senha:focus { outline: 2px solid var(--focus); outline-offset: -1px; border-color: transparent; }
+
+  .btn {
+    flex: none;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--solid-ink);
+    background: var(--solid);
+    border: 1px solid var(--solid);
+    border-radius: 8px;
+    padding: 11px 22px;
+    cursor: pointer;
+    transition: opacity .15s ease;
+  }
+  .btn:hover { opacity: .88; }
+  .btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .btn[disabled] { opacity: .5; cursor: progress; }
+
+  .lembrar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: var(--step--1);
+    color: var(--ink-2);
+    cursor: pointer;
+  }
+  .lembrar input { accent-color: var(--green); width: 16px; height: 16px; flex: none; }
+
+  .erro {
+    margin: 16px 0 0;
+    font-size: var(--step--1);
+    color: var(--erro);
+    font-weight: 500;
+  }
+
+  /* ---------- seções ---------- */
+
+  section.bloco { padding-block: 34px 0; }
+  section.bloco:first-of-type { padding-top: 38px; }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .section-head .label { color: var(--ink); flex: none; }
+  .section-head .rule { height: 1px; background: var(--line); flex: 1; }
+  .section-head .count {
+    font-family: var(--display);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--ink-3);
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- cartões ---------- */
+
+  /* dois por linha: os cartões ganham corpo em vez de virar uma fileira estreita */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 24px 19px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .card:hover {
+    border-color: var(--focus);
+    box-shadow: 0 8px 24px -14px rgba(34,107,66,.55);
+  }
+
+  .tag {
+    align-self: flex-start;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .tag--open {
+    color: var(--ink-2);
+    border: 1px solid var(--line);
+    background: transparent;
+  }
+  .tag--restrito {
+    color: var(--solid-ink);
+    background: var(--solid);
+    border: 1px solid var(--solid);
+  }
+
+  .card__title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .card__title a { color: var(--ink); text-decoration: none; }
+  .card__title a::after { content: ""; position: absolute; inset: 0; border-radius: 12px; }
+  .card__title a:hover { color: var(--hover); }
+  .card__title a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
+
+  .card__desc {
+    margin: 0;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 46ch;
+    flex: 1;
+  }
+
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 3px;
+    padding-top: 11px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .card__url {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .copy {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 11px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .copy:hover { background: var(--solid); color: var(--solid-ink); border-color: var(--solid); }
+  .copy:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .copy[data-done="1"] { background: var(--solid); color: var(--solid-ink); border-color: var(--solid); }
+
+  /* ---------- contatos ---------- */
+
+  .contacts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .contact {
+    background: var(--surface);
+    padding: 15px 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-decoration: none;
+    color: inherit;
+    transition: background .15s ease;
+  }
+  a.contact:hover { background: var(--surface-2); }
+  a.contact:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  .contact--lead { background: var(--surface-2); }
+  a.contact--lead:hover { background: var(--mist); }
+
+  .contact .label { color: var(--ink-3); }
+  .contact__value {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .contact__note { font-size: var(--step--1); color: var(--ink-3); }
+
+  /* ---------- nota ---------- */
+
+  .note {
+    margin-top: 34px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .note .label { color: var(--ink-3); display: block; margin-bottom: 10px; }
+  .note ul { margin: 0; padding-left: 17px; }
+  .note li { font-size: var(--step--1); color: var(--ink-2); margin-bottom: 6px; }
+  .note li:last-child { margin-bottom: 0; }
+  .note strong { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: 34px;
+    border-top: 1px solid var(--line);
+    padding-block: 16px 44px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    justify-content: space-between;
+    color: var(--ink-3);
+  }
+  footer .label { color: var(--ink-3); }
+
+  @media (max-width: 900px) {
+    .contacts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .contacts { grid-template-columns: minmax(0, 1fr); }
+    .card { padding: 20px 20px 16px; }
+    .card__title { font-size: 1.1875rem; }
+    .band .inner { flex-direction: column; align-items: flex-start; }
+    .band__meta { text-align: left; }
+    .lockup { gap: 16px; }
+    .lockup img { height: 66px; }
+    .portao { padding-block: 40px 60px; }
+    .portao__caixa { padding: 24px 22px 22px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="inner">
+    <div class="lockup">
+      <img src="logo-habitar-branco.png" alt="Habitar Imóveis">
+      <div class="lockup__rule" aria-hidden="true"></div>
+      <div class="lockup__text">
+        <h1 class="label">Central de links</h1>
+        <span>Uso interno da equipe</span>
+      </div>
+    </div>
+    <div class="band__right">
+      <div class="band__meta">
+        <b>CRECI CJ 12.193</b><br>
+        Itumbiara &middot; GO
+      </div>
+      <button class="pill" id="theme-toggle" type="button" aria-label="Mudar para o tema escuro">
+        <svg id="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+        <svg id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        <span id="theme-label">Escuro</span>
+      </button>
+      <button class="pill" id="sair" type="button" hidden>Sair</button>
+    </div>
+  </div>
+</header>
+
+<section class="portao inner" id="portao">
+  <form class="portao__caixa" id="form-senha">
+    <span class="label">Acesso da equipe</span>
+    <h2>Digite a senha para ver os links</h2>
+    <p>Os links da Habitar ficam guardados de forma cifrada nesta página. Sem a senha, nem o código-fonte mostra para onde eles apontam.</p>
+    <div class="portao__linha">
+      <input type="password" id="senha" name="senha" autocomplete="current-password" placeholder="Senha da equipe" spellcheck="false" autocapitalize="none" required>
+      <button class="btn" type="submit" id="entrar">Entrar</button>
+    </div>
+    <label class="lembrar" for="lembrar">
+      <input type="checkbox" id="lembrar" checked>
+      Continuar conectado neste aparelho
+    </label>
+    <p class="erro" id="erro" hidden></p>
+  </form>
+</section>
+
+<main class="inner" id="conteudo" hidden></main>
+
+<div class="inner">
+  <footer>
+    <span class="label">Habitar Im&oacute;veis &middot; CRECI CJ 12.193</span>
+    <span class="label">P&aacute;gina de uso interno</span>
+  </footer>
+</div>
+
+<script id="dados" type="application/json">{"sal":"qKXIsMqilRJFPpO4DZ5iUA==","iv":"PZvgL6XQIucIaN9o","voltas":310000,"texto":"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"}</script>
+
+<script>
+/* ---------------- tema ---------------- */
+(function () {
+  var KEY = "habitar-tema";
+  var root = document.documentElement;
+  var btn = document.getElementById("theme-toggle");
+  var moon = document.getElementById("icon-moon");
+  var sun = document.getElementById("icon-sun");
+  var label = document.getElementById("theme-label");
+
+  function escolhido() {
+    var t = root.getAttribute("data-theme");
+    return t === "dark" || t === "light" ? t : null;
+  }
+  function atual() {
+    return escolhido() || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  }
+  function sincronizar() {
+    var escuro = atual() === "dark";
+    moon.hidden = escuro;
+    sun.hidden = !escuro;
+    label.textContent = escuro ? "Claro" : "Escuro";
+    btn.setAttribute("aria-label", escuro ? "Mudar para o tema claro" : "Mudar para o tema escuro");
+  }
+
+  btn.addEventListener("click", function () {
+    var proximo = atual() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", proximo);
+    try { localStorage.setItem(KEY, proximo); } catch (e) { /* segue valendo só nesta visita */ }
+    sincronizar();
+  });
+
+  /* enquanto ninguém escolheu, o botão acompanha o tema do aparelho */
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    var aoMudar = function () { if (!escolhido()) sincronizar(); };
+    if (mq.addEventListener) { mq.addEventListener("change", aoMudar); }
+    else if (mq.addListener) { mq.addListener(aoMudar); }
+  }
+  sincronizar();
+})();
+
+/* ---------------- portão + conteúdo ---------------- */
+(function () {
+  var LS_SENHA = "habitar-central-senha";
+  var portao = document.getElementById("portao");
+  var conteudo = document.getElementById("conteudo");
+  var form = document.getElementById("form-senha");
+  var campo = document.getElementById("senha");
+  var lembrar = document.getElementById("lembrar");
+  var entrar = document.getElementById("entrar");
+  var erro = document.getElementById("erro");
+  var sair = document.getElementById("sair");
+
+  var cifrado = JSON.parse(document.getElementById("dados").textContent);
+
+  function deBase64(txt) {
+    var bruto = atob(txt);
+    var bytes = new Uint8Array(bruto.length);
+    for (var i = 0; i < bruto.length; i++) { bytes[i] = bruto.charCodeAt(i); }
+    return bytes;
+  }
+
+  /* PBKDF2 + AES-GCM: a senha nunca sai daqui e o conteúdo só existe decifrado na memória */
+  async function abrir(senha) {
+    var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(senha), "PBKDF2", false, ["deriveKey"]);
+    var chave = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: deBase64(cifrado.sal), iterations: cifrado.voltas, hash: "SHA-256" },
+      base,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["decrypt"]
+    );
+    var claro = await crypto.subtle.decrypt({ name: "AES-GCM", iv: deBase64(cifrado.iv) }, chave, deBase64(cifrado.texto));
+    return JSON.parse(new TextDecoder().decode(claro));
+  }
+
+  function elemento(tag, classe, texto) {
+    var el = document.createElement(tag);
+    if (classe) { el.className = classe; }
+    if (texto != null) { el.textContent = texto; }
+    return el;
+  }
+
+  function cabecalhoSecao(rotulo, nota) {
+    var head = elemento("div", "section-head");
+    head.appendChild(elemento("span", "label", rotulo));
+    head.appendChild(elemento("span", "rule"));
+    head.appendChild(elemento("span", "count", nota));
+    return head;
+  }
+
+  function montarCartao(item) {
+    var card = elemento("article", "card");
+    card.appendChild(elemento("span", "tag tag--" + item.tagTipo, item.tag));
+
+    var titulo = elemento("h2", "card__title");
+    var link = elemento("a", null, item.titulo);
+    link.href = item.url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    titulo.appendChild(link);
+    card.appendChild(titulo);
+
+    card.appendChild(elemento("p", "card__desc", item.desc));
+
+    var pe = elemento("div", "card__foot");
+    pe.appendChild(elemento("span", "card__url", item.fonte));
+    var botao = elemento("button", "copy", "Copiar");
+    botao.type = "button";
+    botao.setAttribute("data-url", item.url);
+    pe.appendChild(botao);
+    card.appendChild(pe);
+    return card;
+  }
+
+  function montarContato(item) {
+    var el = item.url ? elemento("a", "contact") : elemento("div", "contact");
+    if (item.destaque) { el.className += " contact--lead"; }
+    if (item.url) {
+      el.href = item.url;
+      if (item.url.indexOf("tel:") !== 0) { el.target = "_blank"; el.rel = "noopener"; }
+    }
+    el.appendChild(elemento("span", "label", item.rotulo));
+    el.appendChild(elemento("span", "contact__value", item.valor));
+    el.appendChild(elemento("span", "contact__note", item.nota));
+    return el;
+  }
+
+  function desenhar(dados) {
+    conteudo.textContent = "";
+
+    dados.secoes.forEach(function (secao) {
+      var bloco = elemento("section", "bloco");
+      bloco.appendChild(cabecalhoSecao(secao.rotulo, secao.nota));
+
+      if (secao.tipo === "contatos") {
+        var faixa = elemento("div", "contacts");
+        secao.itens.forEach(function (item) { faixa.appendChild(montarContato(item)); });
+        bloco.appendChild(faixa);
+      } else {
+        var grade = elemento("div", "grid");
+        secao.itens.forEach(function (item) { grade.appendChild(montarCartao(item)); });
+        bloco.appendChild(grade);
+      }
+      conteudo.appendChild(bloco);
+    });
+
+    var nota = elemento("div", "note");
+    nota.appendChild(elemento("span", "label", dados.aviso.rotulo));
+    var lista = document.createElement("ul");
+    dados.aviso.itens.forEach(function (txt) {
+      var li = document.createElement("li");
+      li.innerHTML = txt;
+      lista.appendChild(li);
+    });
+    nota.appendChild(lista);
+    conteudo.appendChild(nota);
+
+    ligarCopiar();
+    portao.hidden = true;
+    conteudo.hidden = false;
+    sair.hidden = false;
+  }
+
+  function ligarCopiar() {
+    conteudo.querySelectorAll(".copy").forEach(function (btn) {
+      btn.addEventListener("click", function (evento) {
+        evento.preventDefault();
+        evento.stopPropagation();
+        var url = btn.getAttribute("data-url");
+        var original = btn.textContent;
+
+        function pronto(ok) {
+          btn.textContent = ok ? "Copiado" : "Erro";
+          btn.dataset.done = ok ? "1" : "";
+          setTimeout(function () { btn.textContent = original; btn.dataset.done = ""; }, 1600);
+        }
+        function reserva() {
+          var campo = document.createElement("textarea");
+          campo.value = url;
+          campo.setAttribute("readonly", "");
+          campo.style.position = "fixed";
+          campo.style.opacity = "0";
+          document.body.appendChild(campo);
+          campo.select();
+          var ok = false;
+          try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+          document.body.removeChild(campo);
+          pronto(ok);
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () { pronto(true); }, reserva);
+        } else {
+          reserva();
+        }
+      });
+    });
+  }
+
+  async function tentar(senha, guardar) {
+    var dados = await abrir(senha);
+    if (guardar) {
+      try { localStorage.setItem(LS_SENHA, senha); } catch (e) { /* vale só nesta visita */ }
+    }
+    desenhar(dados);
+  }
+
+  form.addEventListener("submit", function (evento) {
+    evento.preventDefault();
+    erro.hidden = true;
+    entrar.disabled = true;
+    tentar(campo.value, lembrar.checked).catch(function () {
+      erro.textContent = "Senha incorreta. Ela diferencia maiúsculas de minúsculas.";
+      erro.hidden = false;
+      campo.select();
+    }).then(function () {
+      entrar.disabled = false;
+    });
+  });
+
+  sair.addEventListener("click", function () {
+    try { localStorage.removeItem(LS_SENHA); } catch (e) {}
+    location.reload();
+  });
+
+  /* quem já entrou neste aparelho não digita de novo */
+  (function () {
+    var guardada = null;
+    try { guardada = localStorage.getItem(LS_SENHA); } catch (e) {}
+    if (guardada) {
+      tentar(guardada, false).catch(function () {
+        try { localStorage.removeItem(LS_SENHA); } catch (e) {}
+      });
+    }
+  })();
+
+  if (!window.isSecureContext || !window.crypto || !crypto.subtle) {
+    erro.textContent = "Este navegador não abre a página cifrada. Abra o endereço começando com https://";
+    erro.hidden = false;
+  }
+})();
+</script>
+
+</body>
+</html>
